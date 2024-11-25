@@ -13,7 +13,7 @@ beforeEach(() => {
   return seed(testData);
 });
 
-afterEach(() => {
+afterAll(() => {
   return db.end();
 });
 
@@ -24,6 +24,26 @@ describe('GET /api', () => {
       .expect(200)
       .then(({ body: { endpoints } }) => {
         expect(endpoints).toEqual(endpointsJson);
+      });
+  });
+});
+
+describe('GET /api/topics', () => {
+  test('200: Responds with an array of topic objects, each with properties: slug, description', () => {
+    return request(app)
+      .get('/api/topics')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.topics).toBeInstanceOf(Array);
+        expect(body.topics).toHaveLength(3);
+        body.topics.forEach((topic) => {
+          expect(topic).toEqual(
+            expect.objectContaining({
+              description: expect.any(String),
+              slug: expect.any(String),
+            })
+          );
+        });
       });
   });
 });

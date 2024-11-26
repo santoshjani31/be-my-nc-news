@@ -86,7 +86,7 @@ describe('GET /api/articles/:article_id', () => {
       .get('/api/articles/99999')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('not found');
+        expect(body.msg).toBe('Article not found');
       });
   });
 });
@@ -125,6 +125,57 @@ describe('GET /api/articles', () => {
         expect(body.articles).toBeSortedBy('created_at', {
           descending: true,
         });
+      });
+  });
+});
+describe('GET /api/articles/:article_id/comments', () => {
+  test('200: Responds with an array of comments for the given article_id', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeInstanceOf(Array);
+        expect(body.comments).toHaveLength(11);
+        body.comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            })
+          );
+        });
+        expect(body.comments).toBeSortedBy('created_at', { descending: true });
+      });
+  });
+
+  test('200: Responds with an empty array if the article has no comments', () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+
+  test('404: Responds with "Article not found" for non-existent article_id', () => {
+    return request(app)
+      .get('/api/articles/9999/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Article not found');
+      });
+  });
+
+  test('400: Responds with "Invalid input format" for invalid article_id', () => {
+    return request(app)
+      .get('/api/articles/not-a-number/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid input format');
       });
   });
 });

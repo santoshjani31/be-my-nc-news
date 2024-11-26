@@ -3,6 +3,7 @@ const {
   getApi,
   getApiTopics,
   getArticleById,
+  getArticles,
 } = require('./controllers/api.controller');
 const {
   postgresErrorHandler,
@@ -16,6 +17,8 @@ app.get('/api', getApi);
 app.get('/api/topics', getApiTopics);
 
 app.get('/api/articles/:article_id', getArticleById);
+
+app.get('/api/articles', getArticles);
 
 app.use(postgresErrorHandler);
 app.use(customErrorHandler);

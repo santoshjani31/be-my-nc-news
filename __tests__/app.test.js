@@ -47,3 +47,46 @@ describe('GET /api/topics', () => {
       });
   });
 });
+
+describe('GET /api/articles/:article_id', () => {
+  test('200: Responds with an article object with all relevant properties ', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body }) => {
+        //console.log(body, '<<< inside test');
+        expect(body.articles).toBeInstanceOf(Array);
+        body.articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: 1,
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test('400: responds with Invalid input format for invalid article_id', () => {
+    return request(app)
+      .get('/api/articles/notNumber')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid input format');
+      });
+  });
+  test('404: responds with Article not found for non-existent article_id', () => {
+    return request(app)
+      .get('/api/articles/99999')
+      .expect(404)
+      .then(({ body }) => {
+        console.log(body.msg);
+        expect(body.msg).toBe('not found');
+      });
+  });
+});

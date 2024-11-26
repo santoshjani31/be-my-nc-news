@@ -1,5 +1,9 @@
 const endpointsJson = require('../endpoints.json');
-const { fetchApiTopics, fetchArticleById } = require('../models/api.models');
+const {
+  fetchApiTopics,
+  fetchArticleById,
+  fetchArticles,
+} = require('../models/api.models');
 const { checkArticleExist } = require('../models/articles.models');
 
 exports.getApi = (req, res) => {
@@ -25,6 +29,14 @@ exports.getArticleById = (req, res, next) => {
   Promise.all(promises)
     .then((articleRes) => {
       res.status(200).send({ articles: articleRes[0] });
+    })
+    .catch(next);
+};
+
+exports.getArticles = (req, res, next) => {
+  fetchArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };

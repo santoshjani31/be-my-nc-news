@@ -5,6 +5,7 @@ const {
   fetchArticles,
   fetchCommentsByArticleId,
   insertCommentByArticleId,
+  updatedArticlesById,
 } = require('../models/api.models');
 const { checkArticleExist } = require('../models/articles.models');
 
@@ -55,6 +56,17 @@ exports.postCommentByArticleId = (req, res, next) => {
   insertCommentByArticleId(article_id, username, body)
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.patchArticlesById = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  updatedArticlesById(article_id, inc_votes)
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };

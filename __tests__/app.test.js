@@ -248,3 +248,60 @@ describe('POST /api/articles/:article_id/comments', () => {
       });
   });
 });
+
+describe('PATCH: /api/articles/:article_id', () => {
+  test('200: Responds with an updated article for specific article id', () => {
+    const inc_votes = { inc_votes: 1 };
+    return request(app)
+      .patch('/api/articles/1')
+      .send(inc_votes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array),
+          body.articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                article_id: 1,
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: 101,
+                article_img_url: expect.any(String),
+              })
+            );
+          });
+      });
+  });
+  test('400: Responds with an error if input vote value is invalid', () => {
+    const inc_votes = { inc_votes: 'not-a-number' };
+    return request(app)
+      .patch('/api/articles/1')
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid input format');
+      });
+  });
+  test('400: Responds with an error if missing parameters', () => {
+    const inc_votes = {};
+    return request(app)
+      .patch('/api/articles/1')
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Missing parameters');
+      });
+  });
+  test('404: Responds with an error Article not found', () => {
+    const inc_votes = { inc_votes: 1 };
+    return request(app)
+      .patch('/api/articles/9999')
+      .send(inc_votes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Article not found');
+      });
+  });
+});

@@ -7,16 +7,20 @@ exports.fetchApiTopics = () => {
 };
 
 exports.fetchArticleById = (article_id) => {
-  let queryStr = 'SELECT * FROM articles';
-  const queryValues = [];
-  if (article_id) {
-    queryStr += ' WHERE article_id = $1;';
-    queryValues.push(article_id);
-  }
-
-  return db.query(queryStr, queryValues).then(({ rows }) => {
-    return rows;
-  });
+  return db
+    .query(
+      `
+    SELECT * FROM articles 
+    WHERE article_id = $1;
+    `,
+      [article_id]
+    )
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: 'Article not found' });
+      }
+      return rows;
+    });
 };
 
 exports.fetchArticles = () => {
@@ -62,6 +66,42 @@ exports.fetchCommentsByArticleId = (article_id) => {
       [article_id]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return db
+          .query('SELECT * FROM articles WHERE article_id = $1;', [article_id])
+          .then(({ rows: articles }) => {
+            if (articles.length === 0) {
+              return Promise.reject({ status: 404, msg: 'Article not found' });
+            }
+            return [];
+          });
+      }
       return rows;
+    });
+};
+
+exports.insertCommentByArticleId = (article_id, username, body) => {
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: 'Missing parameters' });
+  }
+
+  return db
+    .query(
+      `
+      INSERT INTO comments (article_id, author, body, created_at, votes)
+      VALUES ($1, $2, $3, NOW(), 0)
+      RETURNING comment_id, article_id, author, body, created_at, votes;
+      `,
+      [article_id, username, body]
+    )
+    .then(({ rows }) => rows[0])
+    .catch((err) => {
+      if (err.code === '23503') {
+        return Promise.reject({
+          status: 404,
+          msg: 'Article not found',
+        });
+      }
+      throw err;
     });
 };

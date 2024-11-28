@@ -4,6 +4,7 @@ const {
   fetchArticleById,
   fetchArticles,
   fetchCommentsByArticleId,
+  insertCommentByArticleId,
 } = require('../models/api.models');
 const { checkArticleExist } = require('../models/articles.models');
 
@@ -21,15 +22,10 @@ exports.getApiTopics = (req, res, next) => {
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  const promises = [fetchArticleById(article_id)];
 
-  if (article_id) {
-    promises.push(checkArticleExist(article_id));
-  }
-
-  Promise.all(promises)
-    .then((articleRes) => {
-      res.status(200).send({ articles: articleRes[0] });
+  fetchArticleById(article_id)
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };
@@ -44,15 +40,21 @@ exports.getArticles = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  const promises = [fetchCommentsByArticleId(article_id)];
 
-  if (article_id) {
-    promises.push(checkArticleExist(article_id));
-  }
-
-  Promise.all(promises)
+  fetchCommentsByArticleId(article_id)
     .then((comments) => {
-      res.status(200).send({ comments: comments[0] });
+      res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postCommentByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+
+  insertCommentByArticleId(article_id, username, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };

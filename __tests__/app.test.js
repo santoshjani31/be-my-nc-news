@@ -128,6 +128,7 @@ describe('GET /api/articles', () => {
       });
   });
 });
+
 describe('GET /api/articles/:article_id/comments', () => {
   test('200: Responds with an array of comments for the given article_id', () => {
     return request(app)
@@ -176,6 +177,74 @@ describe('GET /api/articles/:article_id/comments', () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe('Invalid input format');
+      });
+  });
+});
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('201: Responds with the newly added comment', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is my first POST',
+    };
+
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            article_id: 1,
+            author: 'butter_bridge',
+            body: 'This is my first POST',
+            created_at: expect.any(String),
+            votes: 0,
+          })
+        );
+      });
+  });
+
+  test('400: Responds with an error if required fields are missing', () => {
+    const newComment = { username: 'butter_bridge' };
+
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Missing parameters');
+      });
+  });
+
+  test('400: Responds with an error if article_id is invalid', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is my first POST',
+    };
+
+    return request(app)
+      .post('/api/articles/not-a-number/comments')
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid input format');
+      });
+  });
+
+  test('404: Responds with an error if article_id does not exist', () => {
+    const newComment = {
+      username: 'butter_bridge',
+      body: 'This is my first POST',
+    };
+
+    return request(app)
+      .post('/api/articles/9999/comments')
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Article not found');
       });
   });
 });

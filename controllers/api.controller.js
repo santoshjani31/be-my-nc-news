@@ -6,6 +6,7 @@ const {
   fetchCommentsByArticleId,
   insertCommentByArticleId,
   updatedArticlesById,
+  removeCommentById,
 } = require('../models/api.models');
 const { checkArticleExist } = require('../models/articles.models');
 
@@ -67,6 +68,15 @@ exports.patchArticlesById = (req, res, next) => {
   updatedArticlesById(article_id, inc_votes)
     .then((articles) => {
       res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentById(comment_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 };

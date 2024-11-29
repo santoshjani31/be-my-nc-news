@@ -40,17 +40,31 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles with Comment Counts",
+    "queries": {
+      "sort_by": "Column to sort by. Defaults to 'created_at'.",
+      "order": "'asc' for ascending or 'desc' for descending order. Defaults to 'desc'."
+    },
     "exampleResponse": {
       "articles": [
         {
           "author": "icellusedkars",
-          "title": "Eight pug gifs that remind me of mitch",
+          "title": "Eight ug gifs that remind me of mitch",
           "article_id": 3,
           "topic": "mitch",
-          "created_at": "2020-11-03 09:12:00",
+          "created_at": "2020-11-03T09:12:00.000Z",
           "votes": 0,
           "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           "comment_count": 2
+        },
+        {
+          "author": "icellusedkars",
+          "title": "A",
+          "article_id": 6,
+          "topic": "mitch",
+          "created_at": "2020-10-18T01:00:00.000Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          "comment_count": 1
         }
       ]
     }

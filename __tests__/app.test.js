@@ -350,3 +350,41 @@ describe('GET /api/users', () => {
       });
   });
 });
+
+describe('GET /api/articles with queries', () => {
+  test('200: Responds with articles sorted by a valid column in descending order (default)', () => {
+    return request(app)
+      .get('/api/articles?sort_by=votes')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy('votes', { descending: true });
+      });
+  });
+
+  test('200: Responds with articles sorted by a valid column in ascending order', () => {
+    return request(app)
+      .get('/api/articles?sort_by=title&order=asc')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy('title', { descending: false });
+      });
+  });
+
+  test('400: Responds with error for invalid sort_by column', () => {
+    return request(app)
+      .get('/api/articles?sort_by=invalid_column')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid sort or order query');
+      });
+  });
+
+  test('400: Responds with error for invalid order query', () => {
+    return request(app)
+      .get('/api/articles?sort_by=title&order=invalid_order')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid sort or order query');
+      });
+  });
+});

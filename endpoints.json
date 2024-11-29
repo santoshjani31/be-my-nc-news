@@ -42,7 +42,8 @@
     "description": "serves an array of all articles with Comment Counts",
     "queries": {
       "sort_by": "Column to sort by. Defaults to 'created_at'.",
-      "order": "'asc' for ascending or 'desc' for descending order. Defaults to 'desc'."
+      "order": "'asc' for ascending or 'desc' for descending order. Defaults to 'desc'.",
+      "topic": "Filters articles by the specified topic"
     },
     "exampleResponse": {
       "articles": [

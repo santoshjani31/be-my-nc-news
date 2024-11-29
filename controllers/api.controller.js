@@ -16,11 +16,9 @@ exports.getApi = (req, res) => {
 };
 
 exports.getApiTopics = (req, res, next) => {
-  fetchApiTopics()
-    .then((topics) => {
-      res.status(200).send({ topics });
-    })
-    .catch(next);
+  fetchApiTopics().then((topics) => {
+    res.status(200).send({ topics });
+  });
 };
 
 exports.getArticleById = (req, res, next) => {
@@ -34,7 +32,9 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
+  const { sort_by, order } = req.query;
+
+  fetchArticles(sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
     })
@@ -83,9 +83,7 @@ exports.deleteCommentById = (req, res, next) => {
 };
 
 exports.getUsers = (req, res, next) => {
-  fetchUsers()
-    .then((users) => {
-      res.status(200).send({ users });
-    })
-    .catch(next);
+  fetchUsers().then((users) => {
+    res.status(200).send({ users });
+  });
 };

@@ -388,3 +388,46 @@ describe('GET /api/articles with queries', () => {
       });
   });
 });
+
+describe('GET /api/articles?topic=', () => {
+  test('200: Responds with articles filtered by the specified topic', () => {
+    return request(app)
+      .get('/api/articles?topic=mitch')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).not.toHaveLength(0);
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe('mitch');
+        });
+      });
+  });
+
+  test('200: Responds with an empty array if the topic exists but has no articles', () => {
+    return request(app)
+      .get('/api/articles?topic=paper')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
+      });
+  });
+
+  test('404: Responds with "Topic not found" if the topic does not exist', () => {
+    return request(app)
+      .get('/api/articles?topic=nonexistent_topic')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Topic not found');
+      });
+  });
+
+  test('200: Responds with all articles if no topic query is provided', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeInstanceOf(Array);
+        expect(body.articles).toHaveLength(13);
+      });
+  });
+});

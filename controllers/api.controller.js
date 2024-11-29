@@ -7,6 +7,7 @@ const {
   insertCommentByArticleId,
   updatedArticlesById,
   removeCommentById,
+  fetchUsers,
 } = require('../models/api.models');
 const { checkArticleExist } = require('../models/articles.models');
 
@@ -77,6 +78,14 @@ exports.deleteCommentById = (req, res, next) => {
   removeCommentById(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch(next);
+};
+
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };

@@ -8,6 +8,7 @@ const {
   updatedArticlesById,
   removeCommentById,
   fetchUsers,
+  selectUserByUsername,
 } = require('../models/api.models');
 const { checkArticleExist } = require('../models/articles.models');
 
@@ -86,4 +87,20 @@ exports.getUsers = (req, res, next) => {
   fetchUsers().then((users) => {
     res.status(200).send({ users });
   });
+};
+
+exports.getUserByUsername = async (req, res, next) => {
+  const { username } = req.params;
+
+  try {
+    const user = await fetchUserByUsername(username);
+
+    if (!user) {
+      return res.status(404).send({ msg: 'User not found' });
+    }
+
+    res.status(200).send({ user });
+  } catch (err) {
+    next(err);
+  }
 };

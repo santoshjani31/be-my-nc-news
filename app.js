@@ -10,6 +10,7 @@ const {
   patchArticlesById,
   deleteCommentById,
   getUsers,
+  getUserByUsername,
 } = require('./controllers/api.controller');
 const {
   postgresErrorHandler,
@@ -38,6 +39,8 @@ app.patch('/api/articles/:article_id', patchArticlesById);
 app.delete('/api/comments/:comment_id', deleteCommentById);
 
 app.get('/api/users', getUsers);
+
+app.get('/api/users/:username', getUserByUsername);
 
 app.use(postgresErrorHandler);
 app.use(customErrorHandler);

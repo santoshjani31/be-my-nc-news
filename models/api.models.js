@@ -175,3 +175,14 @@ exports.fetchUsers = () => {
     return rows;
   });
 };
+
+exports.fetchUserByUsername = async (username) => {
+  const query = `
+    SELECT username, avatar_url, name
+    FROM users
+    WHERE username = $1;
+  `;
+  const result = await db.query(query, [username]);
+
+  return result.rows[0]; // Will return undefined if no user found
+};

@@ -435,3 +435,28 @@ describe('GET /api/articles?topic=', () => {
       });
   });
 });
+
+describe('GET /api/users/:username', () => {
+  test('200: responds with the user object for a valid username', async () => {
+    const { body } = await request(app)
+      .get('/api/users/butter_bridge')
+      .expect(200);
+    expect(body.user).toEqual({
+      username: 'butter_bridge',
+      avatar_url: expect.any(String),
+      name: 'Jonny',
+    });
+  });
+
+  test('404: responds with an error if username does not exist', async () => {
+    const { body } = await request(app)
+      .get('/api/users/non_existent_user')
+      .expect(404);
+    expect(body.msg).toBe('User not found');
+  });
+
+  test('400: responds with an error if username is invalid', async () => {
+    const { body } = await request(app).get('/api/users/123!').expect(400);
+    expect(body.msg).toBe('Invalid username');
+  });
+});

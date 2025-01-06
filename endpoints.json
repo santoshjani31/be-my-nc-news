@@ -150,5 +150,15 @@
         }
       ]
     }
+  },
+  "GET /api/users/:username": {
+    "description": "Fetches a single user by their username.",
+    "exampleResponse": {
+      "user": {
+        "username": "butter_bridge",
+        "avatar_url": "https://www.example.com/avatar.jpg",
+        "name": "Jonny"
+      }
+    }
   }
 }

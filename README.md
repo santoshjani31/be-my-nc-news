@@ -1,103 +1,225 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News].
-You will need to create two .env files for your project: .env.test and .env.development. Into each, add PGDATABASE=, with the correct database name for that environment (see /db/setup.sql for the database names). Double check that these .env files are .gitignored.
+## Overview
 
-Start
-Northcoders News API README
-Overview
-Northcoders News API is a backend project designed to simulate a real-world API service, similar to platforms like Reddit. It allows developers to programmatically access and manipulate data related to articles, comments, users, and topics.
+Northcoders News API is a RESTful web service designed to mimic the backend of a real-world application like Reddit. It allows programmatic access to data stored in a PostgreSQL database, which is interacted with using `node-postgres`. This API provides endpoints for retrieving, creating, updating, and deleting resources related to articles, topics, users, and comments.
 
-This project utilizes PostgreSQL for the database and Node.js with the node-postgres library to interact with the database.
+The application is hosted online using Render and connected to a Supabase-hosted PostgreSQL database.
 
-Hosted Version
-Click here to access the live version of the API
-(Replace # with the actual link to your hosted API.)
+## Getting Started
 
-Core Functionality
-This API provides the following endpoints:
+Follow the steps below to set up the project locally.
 
-GET /api/topics: Retrieves a list of all topics.
-GET /api: Provides a list of all available endpoints.
-GET /api/articles/:article_id: Fetches a single article by its ID, including a comment_count.
-GET /api/articles: Returns a list of articles, with optional sorting and filtering queries.
-GET /api/articles/:article_id/comments: Fetches all comments associated with a specific article.
-POST /api/articles/:article_id/comments: Adds a comment to a specific article.
-PATCH /api/articles/:article_id: Updates the vote count of a specific article.
-DELETE /api/comments/:comment_id: Deletes a comment by its ID.
-GET /api/users: Returns a list of all users.
-Setup Instructions
-Clone the Repository
-To get started, clone the project to your local machine:
+### Prerequisites
 
-bash
-Copy code
-git clone https://github.com/your-username/northcoders-news-api.git
-cd northcoders-news-api
-Install Dependencies
-Run the following command to install all required dependencies:
+Ensure you have the following installed:
 
-bash
-Copy code
-npm install
-Environment Configuration
-You need to create two .env files in the root directory:
+- [Node.js](https://nodejs.org/) (v16 or higher recommended)
+- [PostgreSQL](https://www.postgresql.org/) (v12 or higher)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
 
-.env.test
-.env.development
-These files should define the database URL for your PostgreSQL instance. Example:
+### Cloning the Repository
 
-makefile
-Copy code
-PGDATABASE=your_database_name
-Ensure your test database and development database are configured correctly in these files.
+1. Clone the repository to your local machine:
 
-Database Setup
-To set up the database schema and seed it with test data, run the following commands:
+   ```bash
+   git clone https://github.com/santoshjani31/be-my-nc-news.git
+   cd be-my-nc-news
+   ```
 
-bash
-Copy code
-npm run setup-dbs
-npm run seed
-Run Tests
-To verify that everything is working as expected, run the test suite:
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
 
-bash
-Copy code
+### Setting Up the Environment
+
+You need to create two `.env` files to connect to your PostgreSQL databases for development and testing:
+
+1. Create `.env.development`:
+
+   ```
+   PGDATABASE=nc_news
+   ```
+
+2. Create `.env.test`:
+   ```
+   PGDATABASE=nc_news_test
+   ```
+
+Ensure these files are included in the `.gitignore` to prevent them from being pushed to version control.
+
+### Creating the Databases
+
+To set up the databases:
+
+1. Create the databases by running the following command:
+
+   ```bash
+   npm run setup-dbs
+   ```
+
+2. Seed the development database:
+   ```bash
+   npm run seed
+   ```
+
+### Running the Application Locally
+
+Start the server:
+
+```bash
+npm start
+```
+
+The server will be running on `http://localhost:9090` by default.
+
+### Running Tests
+
+To run the test suite:
+
+```bash
 npm test
-Minimum Requirements
-Node.js: v16.0.0 or higher
-PostgreSQL: v12.0 or higher
-Project Workflow
-Create a new branch for each feature using:
-bash
-Copy code
-git checkout -b <branch-name>
-Push your branch to GitHub:
-bash
-Copy code
-git push origin <branch-name>
-Make a pull request (PR) for code review.
-Once merged, switch back to main and pull the latest changes:
-bash
-Copy code
-git checkout main
-git pull origin main
-Additional Notes
-This project uses Husky to enforce code quality by running pre-commit hooks. Tests must pass before commits are allowed.
+```
 
-For more details about the project or to contribute, please contact the repository maintainer.
+## Endpoints
 
-Let me know if you’d like any adjustments or if this is ready to be committed!
-https://dashboard.render.com/web/srv-ct45jeogph6c73c4nn70/logs
-https://be-my-nc-news.onrender.com
-https://supabase.com/dashboard/project/vowknflbnwjarhmwphwr/editor/29245?schema=public
-https://github.com/santoshjani31/be-my-nc-news/pull/10
-https://github.com/santoshjani31/be-my-nc-news/pull/11
-https://github.com/santoshjani31/be-my-nc-news/pull/12
+### Base URL
 
-End 29/11/24 16:18
+- Local: `http://localhost:9090`
+- Hosted: `https://be-my-nc-news.onrender.com`
 
----
+### Available Endpoints
 
-This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
+#### **GET /api**
+
+- **Description**: Provides documentation of all available endpoints.
+- **Response Example**:
+  ```json
+  {
+    "endpoints": {
+      "GET /api/topics": {
+        "description": "Responds with a list of all topics.",
+        "exampleResponse": {
+          "topics": [
+            { "slug": "coding", "description": "All about coding." },
+            { "slug": "football", "description": "News about football." }
+          ]
+        }
+      }
+    }
+  }
+  ```
+
+#### **GET /api/topics**
+
+- **Description**: Retrieves all topics.
+- **Response Example**:
+  ```json
+  {
+    "topics": [
+      { "slug": "coding", "description": "All about coding." },
+      { "slug": "football", "description": "News about football." }
+    ]
+  }
+  ```
+
+#### **GET /api/articles/:article_id**
+
+- **Description**: Retrieves a specific article by its ID.
+- **Response Example**:
+  ```json
+  {
+    "article": {
+      "article_id": 1,
+      "title": "The Rise of JavaScript",
+      "author": "jessjelly",
+      "body": "JavaScript is taking over the world...",
+      "topic": "coding",
+      "created_at": "2021-07-20T20:00:00.000Z",
+      "votes": 100,
+      "comment_count": 5,
+      "article_img_url": "https://example.com/image.jpg"
+    }
+  }
+  ```
+
+#### **POST /api/articles/:article_id/comments**
+
+- **Description**: Adds a comment to a specific article.
+- **Request Body Example**:
+  ```json
+  {
+    "username": "jessjelly",
+    "body": "Great article!"
+  }
+  ```
+- **Response Example**:
+  ```json
+  {
+    "comment": {
+      "comment_id": 14,
+      "article_id": 1,
+      "author": "jessjelly",
+      "body": "Great article!",
+      "created_at": "2025-01-06T12:00:00.000Z",
+      "votes": 0
+    }
+  }
+  ```
+
+#### **PATCH /api/articles/:article_id**
+
+- **Description**: Updates the votes for a specific article.
+- **Request Body Example**:
+  ```json
+  {
+    "inc_votes": 10
+  }
+  ```
+- **Response Example**:
+  ```json
+  {
+    "article": {
+      "article_id": 1,
+      "votes": 110
+    }
+  }
+  ```
+
+#### **DELETE /api/comments/:comment_id**
+
+- **Description**: Deletes a specific comment by its ID.
+- **Response**:
+  - Status: `204 No Content`
+
+For a complete list of endpoints, refer to the `/api` endpoint.
+
+## Hosting
+
+This API is hosted using:
+
+- **Database**: [Supabase](https://supabase.com/)
+- **Backend**: [Render](https://render.com/)
+
+To deploy your version, you can follow the respective documentation for Supabase and Render.
+
+## Contributions
+
+If you wish to contribute to this project:
+
+1. Fork the repository.
+2. Create a new branch for your feature:
+   ```bash
+   git checkout -b <feature-name>
+   ```
+3. Make your changes and commit them.
+4. Push your branch:
+   ```bash
+   git push origin <feature-name>
+   ```
+5. Open a pull request.
+
+## License
+
+This project is open-source and available under the [MIT License](LICENSE).
